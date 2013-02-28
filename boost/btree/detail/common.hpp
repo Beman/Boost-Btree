@@ -163,8 +163,8 @@ public:
 
   const Key& key(const value_type& v) const {return v;}  // really handy, so expose
 
-  static std::size_t key_size() { return -1; }
-  static std::size_t mapped_size() { return -1; }
+  static std::size_t key_size() { return sizeof(Key); }
+  static std::size_t mapped_size() { return sizeof(Key); }
 
 protected:
   void m_memcpy_value(value_type* dest, const Key* k, std::size_t key_sz,
@@ -188,8 +188,8 @@ public:
   const Key& key(const value_type& v) const  // really handy, so expose
     {return v.key();}
 
-  static std::size_t key_size() { return -1; }
-  static std::size_t mapped_size() { return -1; }
+  static std::size_t key_size() { return sizeof(Key); }
+  static std::size_t mapped_size() { return sizeof(T); }
 
   class value_compare
   {
