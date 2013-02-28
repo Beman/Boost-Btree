@@ -41,7 +41,7 @@ namespace boost
     struct default_native_traits
     {
       typedef boost::uint32_t  node_id_type;     // node ids
-      typedef boost::uint16_t  node_size_type;   // sizes
+      typedef boost::uint32_t  node_size_type;   // sizes
       typedef boost::uint16_t  node_level_type;  // level of node; 0 for leaf node.
                                                  // Could be smaller, but that would
                                                  // require alignment byte so why bother
@@ -56,7 +56,7 @@ namespace boost
     struct default_big_endian_traits
     {
       typedef integer::ubig32_t  node_id_type;
-      typedef integer::ubig16_t  node_size_type;
+      typedef integer::ubig32_t  node_size_type;
       typedef integer::ubig16_t  node_level_type;
       static const BOOST_SCOPED_ENUM(integer::endianness) header_endianness
         = integer::endianness::big;
@@ -65,7 +65,7 @@ namespace boost
     struct default_little_endian_traits
     {
       typedef integer::ulittle32_t  node_id_type;
-      typedef integer::ulittle16_t  node_size_type;
+      typedef integer::ulittle32_t  node_size_type;
       typedef integer::ulittle16_t  node_level_type;
       static const BOOST_SCOPED_ENUM(integer::endianness) header_endianness
         = integer::endianness::little;
@@ -74,7 +74,7 @@ namespace boost
     struct default_endian_traits
     {
       typedef integer::ubig32_t  node_id_type;
-      typedef integer::ubig16_t  node_size_type;
+      typedef integer::ubig32_t  node_size_type;
       typedef integer::ubig16_t  node_level_type;
       static const BOOST_SCOPED_ENUM(integer::endianness) header_endianness
         = integer::endianness::big;
@@ -143,8 +143,8 @@ namespace boost
       node_id_type        m_free_node_list_head_id;  // list of recycleable nodes
 
       boost::uint16_t     m_root_level;
-      boost::uint16_t     m_key_size;            // sizeof(key_type); -1 imples indirect
-      boost::uint16_t     m_mapped_size;         // sizeof(mapped_type); -1 implies indirect
+      boost::uint32_t     m_key_size;            // sizeof(key_type); -1 imples indirect
+      boost::uint32_t     m_mapped_size;         // sizeof(mapped_type); -1 implies indirect
 
       // TODO: Add a better way to verify that an existing file is opened using the same
       // Key, T, Comp, and Traits or when originally created. 
@@ -172,8 +172,8 @@ namespace boost
       boost::uint8_t   major_version() const         { return m_major_version; }  
       boost::uint8_t   minor_version() const         { return m_minor_version; }  
       boost::uint32_t  node_size() const             { return m_node_size; }
-      boost::uint16_t  key_size() const              { return m_key_size; }
-      boost::uint16_t  mapped_size() const           { return m_mapped_size; }
+      boost::uint32_t  key_size() const              { return m_key_size; }
+      boost::uint32_t  mapped_size() const           { return m_mapped_size; }
       flags::bitmask   flags() const { return static_cast<flags::bitmask>(m_flags); }
 
       //  "updated" members that change as the file changes
