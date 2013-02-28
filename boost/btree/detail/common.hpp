@@ -1075,6 +1075,10 @@ btree_base<Key,Base,Traits,Comp>::m_open(const boost::filesystem::path& p,
       BOOST_BTREE_THROW(std::runtime_error(file_path().string()+" isn't a btree"));
     if (m_hdr.big_endian() != (Traits::header_endianness == integer::endianness::big))
       BOOST_BTREE_THROW(std::runtime_error(file_path().string()+" has wrong endianness"));
+	if (m_hdr.key_size() != Base::key_size())
+      BOOST_BTREE_THROW(std::runtime_error(file_path().string()+" has wrong key size"));
+	if (m_hdr.mapped_size() != Base::mapped_size())
+      BOOST_BTREE_THROW(std::runtime_error(file_path().string()+" has wrong mapped size"));
     m_mgr.data_size(m_hdr.node_size());
     m_root = m_mgr.read(m_hdr.root_node_id());
   }
