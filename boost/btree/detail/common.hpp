@@ -1070,6 +1070,8 @@ btree_base<Key,Base,Traits,Comp>::m_open(const boost::filesystem::path& p,
 
   if (m_mgr.open(p, open_flags, btree::default_max_cache_nodes, node_sz))
   { // existing non-truncated file
+	binary_file::open_transaction open_transaction;
+	m_mgr.file_open_transaction(open_transaction);
     m_read_header();
     if (!m_hdr.marker_ok())
       BOOST_BTREE_THROW(std::runtime_error(file_path().string()+" isn't a btree"));
@@ -1081,6 +1083,7 @@ btree_base<Key,Base,Traits,Comp>::m_open(const boost::filesystem::path& p,
       BOOST_BTREE_THROW(std::runtime_error(file_path().string()+" has wrong mapped size"));
     m_mgr.data_size(m_hdr.node_size());
     m_root = m_mgr.read(m_hdr.root_node_id());
+	open_transaction.commit();
   }
   else
   { // new or truncated file
