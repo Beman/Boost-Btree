@@ -726,7 +726,7 @@ private:
     bool               is_leaf() const       {return leaf().is_leaf();}
     bool               is_branch() const     {return leaf().is_branch();}
     std::size_t        size() const          {return leaf().m_size;}  // std::size_t is correct!
-    void               size(std::size_t sz)  {leaf().m_size = sz;}    // ditto
+    void               size(std::size_t sz)  {leaf().m_size = static_cast<unsigned int>(sz);}    // ditto
     bool               empty() const         {return leaf().m_size == 0;}
 
     btree_node_ptr     next_node()  // return next node at current level

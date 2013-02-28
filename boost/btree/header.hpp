@@ -202,9 +202,9 @@ namespace boost
       }
       void  major_version(boost::uint8_t value)      { m_major_version = value; } 
       void  minor_version(boost::uint8_t value)      { m_minor_version = value; }  
-      void  node_size(std::size_t sz)                { m_node_size = sz; }
-      void  key_size(std::size_t sz)                 { m_key_size = sz; }
-      void  mapped_size(std::size_t sz)              { m_mapped_size = sz; }
+      void  node_size(std::size_t sz)                { m_node_size = static_cast<uint32_t>(sz); }
+      void  key_size(std::size_t sz)                 { m_key_size = static_cast<uint32_t>(sz); }
+      void  mapped_size(std::size_t sz)              { m_mapped_size = static_cast<uint32_t>(sz); }
       void  flags(flags::bitmask flgs)               { m_flags = flgs; }
       void  element_count(boost::uint64_t value)     { m_element_count = value; }
       void  increment_element_count()                { ++m_element_count; }
