@@ -24,7 +24,7 @@
 #define BOOST_BINARY_FILE_HPP
 
 #include <boost/btree/detail/config.hpp>
-#include <boost/filesystem/v3/path.hpp>
+#include <boost/filesystem/path.hpp>
 #include <boost/detail/bitmask.hpp>
 #include <boost/assert.hpp>
 #include <ios>
@@ -84,6 +84,25 @@ namespace boost
       static const handle_type invalid_handle = -1;
 #    endif
 
+      class open_transaction
+      {
+      public:
+        open_transaction()
+          : m_file(0) {}
+
+       ~open_transaction()
+	   {
+		 if (m_file)
+			 m_file->close();
+	   }
+
+        void commit()  { m_file = 0; }
+
+      private:
+        binary_file* m_file;
+
+        friend class binary_file;
+      };
  
       binary_file()
         : m_handle(invalid_handle) {}
@@ -101,6 +120,8 @@ namespace boost
       bool open(const filesystem::path& p, oflag::bitmask flags, system::error_code& ec);
       // Requires: !is_open()
       // Returns: true if successful.
+
+      void file_open_transaction(open_transaction& transaction)  { transaction.m_file = this; }
 
       void close();
       bool close(system::error_code& ec);

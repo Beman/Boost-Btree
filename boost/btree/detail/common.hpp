@@ -163,8 +163,8 @@ public:
 
   const Key& key(const value_type& v) const {return v;}  // really handy, so expose
 
-  static std::size_t key_size() { return -1; }
-  static std::size_t mapped_size() { return -1; }
+  static std::size_t key_size() { return sizeof(Key); }
+  static std::size_t mapped_size() { return sizeof(Key); }
 
 protected:
   void m_memcpy_value(value_type* dest, const Key* k, std::size_t key_sz,
@@ -188,8 +188,8 @@ public:
   const Key& key(const value_type& v) const  // really handy, so expose
     {return v.key();}
 
-  static std::size_t key_size() { return -1; }
-  static std::size_t mapped_size() { return -1; }
+  static std::size_t key_size() { return sizeof(Key); }
+  static std::size_t mapped_size() { return sizeof(T); }
 
   class value_compare
   {
@@ -726,7 +726,7 @@ private:
     bool               is_leaf() const       {return leaf().is_leaf();}
     bool               is_branch() const     {return leaf().is_branch();}
     std::size_t        size() const          {return leaf().m_size;}  // std::size_t is correct!
-    void               size(std::size_t sz)  {leaf().m_size = sz;}    // ditto
+    void               size(std::size_t sz)  {leaf().m_size = static_cast<unsigned int>(sz);}    // ditto
     bool               empty() const         {return leaf().m_size == 0;}
 
     btree_node_ptr     next_node()  // return next node at current level
@@ -1070,13 +1070,20 @@ btree_base<Key,Base,Traits,Comp>::m_open(const boost::filesystem::path& p,
 
   if (m_mgr.open(p, open_flags, btree::default_max_cache_nodes, node_sz))
   { // existing non-truncated file
+	binary_file::open_transaction open_transaction;
+	m_mgr.file_open_transaction(open_transaction);
     m_read_header();
     if (!m_hdr.marker_ok())
       BOOST_BTREE_THROW(std::runtime_error(file_path().string()+" isn't a btree"));
     if (m_hdr.big_endian() != (Traits::header_endianness == integer::endianness::big))
       BOOST_BTREE_THROW(std::runtime_error(file_path().string()+" has wrong endianness"));
+	if (m_hdr.key_size() != Base::key_size())
+      BOOST_BTREE_THROW(std::runtime_error(file_path().string()+" has wrong key size"));
+	if (m_hdr.mapped_size() != Base::mapped_size())
+      BOOST_BTREE_THROW(std::runtime_error(file_path().string()+" has wrong mapped size"));
     m_mgr.data_size(m_hdr.node_size());
     m_root = m_mgr.read(m_hdr.root_node_id());
+	open_transaction.commit();
   }
   else
   { // new or truncated file
