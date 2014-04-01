@@ -515,7 +515,11 @@ public:
     friend class index_base;
 
     index_iterator_type   m_index_iterator;
-    file_type*            m_file;  // 0 for end iterator
+// use original type "boost::btree::extendible_mapped_file"
+// instead of typedef type "file_type" to avoid trouble
+// with the i686-apple-darwin11-llvm-g++-4.2 (gcc)4.2.1 compiler
+//    file_type*            m_file;  // 0 for end iterator
+    boost::btree::extendible_mapped_file* m_file;  // 0 for end iterator
 
     Reference dereference() const
     { 
